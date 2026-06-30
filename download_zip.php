@@ -24,14 +24,9 @@ function deleteDirectory(string $ordner): void {
             unlink($vollerPfad);
         }
     }
-
+    
     rmdir($ordner);
-}
-
-
-
-
-
+};
 
 
 if (!isset($_GET['batch']) || $_GET['batch'] === '') {
