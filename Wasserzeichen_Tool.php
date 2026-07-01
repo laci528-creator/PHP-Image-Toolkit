@@ -7,13 +7,10 @@ require("includes/upload_functions.inc.php");
 require("includes/validation_functions.inc.php");
 require("includes/zip_functions.inc.php");
 
-//ta($_POST);
-//ta($_FILES);
 
 $msg = "";
 $msg2 = "";
 $msg3 = "";
-
 
 $maxFiles = 10; // Maximale Anzahl an Dateien, die hochgeladen werden können
 
@@ -111,41 +108,36 @@ if (!empty($convertedFiles)) {
 	</head>
 	<body>
     <?php require("includes/header.inc.php"); ?>
-<h1>Wasserzeichen zu Bildern hinzufügen</h1>
-		
-<form method="post" enctype="multipart/form-data">
-    <label>
-        Bilder auswählen (maximal <?php echo $maxFiles; ?>, nur JPG):
-        <input type="file" name="images[]" multiple accept="image/jpeg">
-    </label>
+        <h1>Wasserzeichen zu Bildern hinzufügen</h1>
+            <form method="post" enctype="multipart/form-data">
+                <label>
+                    Bilder auswählen (maximal <?php echo $maxFiles; ?>, nur JPG):
+                    <input type="file" name="images[]" multiple accept="image/jpeg">
+                </label>
 
-    <label>
-        Wasserzeichen / Logo auswählen:
-        <input type="file" name="watermark" accept="image/png">
-    </label>
-
-    <label>
-        Position:
-        <select name="position">
-            <option value="bottom-right">Rechts unten</option>
-            <option value="bottom-left">Links unten</option>
-            <option value="top-right">Rechts oben</option>
-            <option value="top-left">Links oben</option>
-            <option value="center">Mitte</option>
-        </select>
-    </label>
-
-    <label>
-        Transparenz:
-        <input type="number" name="opacity" min="1" max="100" value="50">
-    </label>
-
-    <input type="submit" value="Wasserzeichen hinzufügen">
-</form>
-
-		<?php echo($msg3);
+                <label>
+                    Wasserzeichen / Logo auswählen:
+                    <input type="file" name="watermark" accept="image/png">
+                </label>
+                <label>
+                    Position:
+                    <select name="position">
+                        <option value="bottom-right">Rechts unten</option>
+                        <option value="bottom-left">Links unten</option>
+                        <option value="top-right">Rechts oben</option>
+                        <option value="top-left">Links oben</option>
+                        <option value="center">Mitte</option>
+                    </select>
+                </label>
+                <label>
+                    Transparenz:
+                    <input type="number" name="opacity" min="1" max="100" value="50">
+                </label>
+                <input type="submit" value="Wasserzeichen hinzufügen">
+            </form>
+		    <?php echo($msg3);
             echo($msg); ?>
-            <h2>Vorschau der konvertierten Bilder</h2>
-			<?php echo($msg2); ?>
+        <h2>Vorschau der konvertierten Bilder</h2>
+		<?php echo($msg2); ?>
 	</body>
 </html>

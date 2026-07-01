@@ -12,7 +12,6 @@ require("includes/zip_functions.inc.php");
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-
 $batchId = "";
 $zielMappe = "";
 $msg = "";
@@ -38,9 +37,7 @@ if (isset($_POST["HC"])) {
                 $zielMappe = "./uploads_bildconverter/" . $batchId . "/";
                 if (!is_dir($zielMappe) && !mkdir($zielMappe, 0755, true)) {
                     $msg .= errorMessage("Der Zielordner konnte nicht erstellt werden.");
-
                 } else {
-
                     for ($i = 0; $i < count($f["name"]); $i++) {
                         $originalName = $f["name"][$i];
 
@@ -127,17 +124,10 @@ if (!empty($convertedFiles)) {
 			<input type="submit" name="HC" value="Hochladen und Konvertieren">
 		</form>
         <br>
-
 		<?php echo($msg); ?>
-        <br>
-        
 		<?php echo $zipLink; ?>
-
         <h2>Vorschau der konvertierten Bilder</h2>
-
 		<?php
 		echo $msg2; ?>
-
 	</body>
-
 </html>

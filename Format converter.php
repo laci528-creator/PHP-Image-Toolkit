@@ -10,8 +10,6 @@ require("includes/zip_functions.inc.php");
 $msg = "";
 $msg2 = "";
 $msg3 = "";
-$convertedFiles = [];
-
 
 $maxFiles = 6;
 $convertedFiles = [];
@@ -73,6 +71,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
 }
+
 
 if (!empty($convertedFiles)) {
     $zipName = 'converted_images_' . bin2hex(random_bytes(6)) . '.zip';
