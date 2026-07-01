@@ -1,5 +1,65 @@
-
 <?php
+
+function Format_konvert(string $newFilename, string $pfad, string $outputformat, int $q):bool {
+
+if (!file_exists($pfad)) {
+    return false;
+}
+
+    $info = getimagesize($pfad);
+    //ta($info);
+    if ($info === false || !isset($info['mime'])) {
+        return false;
+    }
+
+        if ($info['mime'] == 'image/jpeg') {
+            $image = imagecreatefromjpeg($pfad);
+        } 
+        elseif ($info['mime'] == 'image/webp') {
+            $image = imagecreatefromwebp($pfad);
+        } 
+        elseif ($info['mime'] == 'image/png') {
+            $image = imagecreatefrompng($pfad);
+        } 
+        elseif ($info['mime'] == 'image/avif') {
+            $image = imagecreatefromavif($pfad);
+        }
+        elseif ($info['mime'] == 'image/gif') {
+            $image = imagecreatefromgif($pfad);
+        }
+        else {
+            // falsche bilddatei..
+            return false;
+        }
+
+        if (!$image) {
+            return false;
+        }
+        imagepalettetotruecolor($image);
+
+        $ok = false;
+
+            switch($outputformat) {
+                case "jpeg":
+                    $ok = imagejpeg($image,'./output_image/'. $newFilename,$q);
+                    break;
+                case "png":
+                    $pngQuality = (int) round((100 - $q) / 100 * 9); 
+                    $ok = imagepng($image,'./output_image/'. $newFilename, $pngQuality);
+                    break;
+                case "webp":
+                    $ok = imagewebp($image,'./output_image/'. $newFilename,$q);
+                    break;
+                case "avif":
+                    $ok = imageavif($image,'./output_image/'. $newFilename,$q);
+                    break;
+                    }
+    
+    imagedestroy($image);
+
+    return $ok;
+
+}
 
 function Convert_Bild(string $pfad, int $size_neu): bool {
     $ok = false;
@@ -92,6 +152,92 @@ function buildPreview(string $mappe, string $originalName, int $groesse): string
     $neuerDateiname = $info["filename"] . "_" . $groesse . "px." . $info["extension"];
 
     return '<img style="max-width:300px;height:auto;" src="' . $mappe . $groesse . '/' . rawurlencode($neuerDateiname) . '"><br><p>' . htmlspecialchars($neuerDateiname) . '</p>';
+}
+
+
+
+function addWatermark(
+    string $imagePath,
+    string $watermarkPath,
+    string $outputPath,
+    string $position = "bottom-right",
+    int $opacity = 50
+): bool {
+
+    $imageInfo = getimagesize($imagePath);
+    $watermarkInfo = getimagesize($watermarkPath);
+
+    if ($imageInfo === false || $watermarkInfo === false) {
+        return false;
+    }
+
+    $image = imagecreatefromjpeg($imagePath);
+    $watermark = imagecreatefrompng($watermarkPath);
+
+    if (!$image || !$watermark) {
+        return false;
+    }
+
+    $imageWidth = imagesx($image);
+    $imageHeight = imagesy($image);
+
+    $watermarkWidth = imagesx($watermark);
+    $watermarkHeight = imagesy($watermark);
+
+    $margin = 20;
+
+    switch ($position) {
+        case "bottom-left":
+            $x = $margin;
+            $y = $imageHeight - $watermarkHeight - $margin;
+            break;
+
+        case "top-right":
+            $x = $imageWidth - $watermarkWidth - $margin;
+            $y = $margin;
+            break;
+
+        case "top-left":
+            $x = $margin;
+            $y = $margin;
+            break;
+
+        case "center":
+            $x = (int)(($imageWidth - $watermarkWidth) / 2);
+            $y = (int)(($imageHeight - $watermarkHeight) / 2);
+            break;
+
+        case "bottom-right":
+        default:
+            $x = $imageWidth - $watermarkWidth - $margin;
+            $y = $imageHeight - $watermarkHeight - $margin;
+            break;
+    }
+
+    imagecopymerge(
+        $image,
+        $watermark,
+        $x,
+        $y,
+        0,
+        0,
+        $watermarkWidth,
+        $watermarkHeight,
+        $opacity
+    );
+
+    $outputDir = dirname($outputPath);
+
+    if (!is_dir($outputDir)) {
+        mkdir($outputDir, 0777, true);
+    }
+
+    $ok = imagejpeg($image, $outputPath, 90);
+
+    imagedestroy($image);
+    imagedestroy($watermark);
+
+    return $ok;
 }
 
 

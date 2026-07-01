@@ -1,133 +1,16 @@
 <?php
 require("includes/config.inc.php");
 require("includes/common.inc.php");
-require("includes/Format_converter_function.inc.php");
-
+require("includes/filename_functions.inc.php");
+require("includes/image_functions.inc.php");
+require("includes/upload_functions.inc.php");
+require("includes/validation_functions.inc.php");
+require("includes/zip_functions.inc.php");
 
 $msg = "";
 $msg2 = "";
 $msg3 = "";
 $convertedFiles = [];
-
-function validateUploadedImage(array $file, int $maxFileSize = 8388608): array
-{
-    $allowedMimeTypes = [
-        "image/jpeg",
-        "image/png",
-        "image/gif",
-        "image/webp",
-        "image/avif"
-    ];
-
-    if (!isset($file["error"]) || $file["error"] !== UPLOAD_ERR_OK) {
-        return [
-            "success" => false,
-            "message" => "Beim Hochladen der Datei ist ein Fehler aufgetreten."
-        ];
-    }
-
-    if ($file["size"] > $maxFileSize) {
-        return [
-            "success" => false,
-            "message" => "Die Datei ist zu groß."
-        ];
-    }
-
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $mimeType = finfo_file($finfo, $file["tmp_name"]);
-    finfo_close($finfo);
-
-    if (!in_array($mimeType, $allowedMimeTypes, true)) {
-        return [
-            "success" => false,
-            "message" => "Dieser Dateityp ist nicht erlaubt."
-        ];
-    }
-
-    return [
-        "success" => true,
-        "message" => "Die Datei ist gültig.",
-        "mime" => $mimeType
-    ];
-}
-
-function validateQuality(mixed $quality): array
-{
-    $quality = filter_var($quality, FILTER_VALIDATE_INT);
-
-    if ($quality === false || $quality < 1 || $quality > 99) {
-        return [
-            "success" => false,
-            "message" => "Bitte geben Sie eine Qualität zwischen 1 und 99 ein."
-        ];
-    }
-
-    return [
-        "success" => true,
-        "quality" => $quality
-    ];
-}
-
-function validateOutputFormat(mixed $format): array
-{
-    $allowedFormats = ["jpeg", "png", "webp", "avif"];
-
-    if (!is_string($format) || !in_array($format, $allowedFormats, true)) {
-        return [
-            "success" => false,
-            "message" => "Bitte wählen Sie ein gültiges Ausgabeformat."
-        ];
-    }
-
-    return [
-        "success" => true,
-        "format" => $format
-    ];
-}
-
-
-function getUploadedFileByIndex(array $files, int $index): array
-{
-    return [
-        "name" => $files["name"][$index],
-        "type" => $files["type"][$index],
-        "tmp_name" => $files["tmp_name"][$index],
-        "error" => $files["error"][$index],
-        "size" => $files["size"][$index]
-    ];
-}
-
-
-function createSafeFilename(string $originalFilename, string $extension): string
-{
-    $nameOnly = pathinfo($originalFilename, PATHINFO_FILENAME);
-
-    $safeName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $nameOnly);
-
-    return $safeName . '_' . bin2hex(random_bytes(8)) . "." . $extension;
-}
-
-
-function createZip(array $files, string $zipPath): bool
-{
-    if (!is_dir(dirname($zipPath))) {
-        mkdir(dirname($zipPath), 0777, true);
-    }
-
-    $zip = new ZipArchive();
-
-    if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-        return false;
-    }
-
-    foreach ($files as $filePath) {
-        if (file_exists($filePath)) {
-            $zip->addFile($filePath, basename($filePath));
-        }
-    }
-
-    return $zip->close();
-}
 
 
 $maxFiles = 6;
@@ -214,30 +97,7 @@ if (!empty($convertedFiles)) {
 		<meta charset="utf-8">
 
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.css">
-        <style>
-            .download-button {
-                display: inline-block;
-                padding: 0.6em 1em;
-                background: #2d7dd2;
-                color: white;
-                text-decoration: none;
-                border-radius: 6px;
-            }
-            .success {
-                    margin:0.5em 0;
-                    padding:0.2em;
-                    border-left:10px solid green;
-                    font-style:italic;
-                }
-            .error {
-                    margin:0.5em 0;
-                    padding:0.2em;
-                    border-left:10px solid red;
-                    font-weight:bold;
-                    color:red;
-                }
-        </style>
-
+        <link rel="stylesheet" href="css/common.css">
 	</head>
 	<body>
 		<h1>Bildformat Konverter</h1>

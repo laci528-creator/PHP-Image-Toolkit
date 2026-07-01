@@ -1,6 +1,11 @@
 <?php
 require("includes/config.inc.php");
 require("includes/common.inc.php");
+require("includes/filename_functions.inc.php");
+require("includes/image_functions.inc.php");
+require("includes/upload_functions.inc.php");
+require("includes/validation_functions.inc.php");
+require("includes/zip_functions.inc.php");
 
 //ta($_POST);
 //ta($_FILES);
@@ -8,153 +13,6 @@ require("includes/common.inc.php");
 $msg = "";
 $msg2 = "";
 $msg3 = "";
-
-function addWatermark(
-    string $imagePath,
-    string $watermarkPath,
-    string $outputPath,
-    string $position = "bottom-right",
-    int $opacity = 50
-): bool {
-
-    $imageInfo = getimagesize($imagePath);
-    $watermarkInfo = getimagesize($watermarkPath);
-
-    if ($imageInfo === false || $watermarkInfo === false) {
-        return false;
-    }
-
-    $image = imagecreatefromjpeg($imagePath);
-    $watermark = imagecreatefrompng($watermarkPath);
-
-    if (!$image || !$watermark) {
-        return false;
-    }
-
-    $imageWidth = imagesx($image);
-    $imageHeight = imagesy($image);
-
-    $watermarkWidth = imagesx($watermark);
-    $watermarkHeight = imagesy($watermark);
-
-    $margin = 20;
-
-    switch ($position) {
-        case "bottom-left":
-            $x = $margin;
-            $y = $imageHeight - $watermarkHeight - $margin;
-            break;
-
-        case "top-right":
-            $x = $imageWidth - $watermarkWidth - $margin;
-            $y = $margin;
-            break;
-
-        case "top-left":
-            $x = $margin;
-            $y = $margin;
-            break;
-
-        case "center":
-            $x = (int)(($imageWidth - $watermarkWidth) / 2);
-            $y = (int)(($imageHeight - $watermarkHeight) / 2);
-            break;
-
-        case "bottom-right":
-        default:
-            $x = $imageWidth - $watermarkWidth - $margin;
-            $y = $imageHeight - $watermarkHeight - $margin;
-            break;
-    }
-
-    imagecopymerge(
-        $image,
-        $watermark,
-        $x,
-        $y,
-        0,
-        0,
-        $watermarkWidth,
-        $watermarkHeight,
-        $opacity
-    );
-
-    $outputDir = dirname($outputPath);
-
-    if (!is_dir($outputDir)) {
-        mkdir($outputDir, 0777, true);
-    }
-
-    
-
-
-
-
-    $ok = imagejpeg($image, $outputPath, 90);
-
-    imagedestroy($image);
-    imagedestroy($watermark);
-
-    return $ok;
-}
-
-function getUploadedFileByIndex(array $files, int $index): array
-{
-    return [
-        "name" => $files["name"][$index],
-        "type" => $files["type"][$index],
-        "tmp_name" => $files["tmp_name"][$index],
-        "error" => $files["error"][$index],
-        "size" => $files["size"][$index]
-    ];
-}
-
-function createSafeFilename(string $originalFilename, string $extension): string
-{
-    $nameOnly = pathinfo($originalFilename, PATHINFO_FILENAME);
-
-    $safeName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $nameOnly);
-
-    return $safeName . '_' . bin2hex(random_bytes(8)) . "." . $extension;
-}
-
-function validateOpacity(mixed $opacity): array
-{
-    $opacity = filter_var($opacity, FILTER_VALIDATE_INT);
-
-    if ($opacity === false || $opacity < 1 || $opacity > 100) {
-        return [
-            "success" => false,
-            "message" => "Bitte geben Sie eine Transparenz zwischen 1 und 100 ein."
-        ];
-    }
-
-    return [
-        "success" => true,
-        "opacity" => $opacity
-    ];
-}
-
-function createZip(array $files, string $zipPath): bool
-{
-    if (!is_dir(dirname($zipPath))) {
-        mkdir(dirname($zipPath), 0777, true);
-    }
-
-    $zip = new ZipArchive();
-
-    if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-        return false;
-    }
-
-    foreach ($files as $filePath) {
-        if (file_exists($filePath)) {
-            $zip->addFile($filePath, basename($filePath));
-        }
-    }
-
-    return $zip->close();
-}
 
 
 $maxFiles = 10; // Maximale Anzahl an Dateien, die hochgeladen werden können
@@ -249,33 +107,7 @@ if (!empty($convertedFiles)) {
 		<title>Bildverarbeitung</title>
 		<meta charset="utf-8">
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.css">
-        <style>
-            .download-button {
-                display: inline-block;
-                padding: 10px 20px;
-                margin: 10px 0;
-                background-color: #4CAF50;
-                color: white;
-                text-decoration: none;
-                border-radius: 5px;
-            }
-            .download-button:hover {
-                background-color: #45a049;
-            }
-            .success {
-                    margin:0.5em 0;
-                    padding:0.2em;
-                    border-left:10px solid green;
-                    font-style:italic;
-                }
-            .error {
-                    margin:0.5em 0;
-                    padding:0.2em;
-                    border-left:10px solid red;
-                    font-weight:bold;
-                    color:red;
-                }
-        </style>
+        <link rel="stylesheet" href="css/common.css">
 	</head>
 	<body>
 <h1>Wasserzeichen zu Bildern hinzufügen</h1>

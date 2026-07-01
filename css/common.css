@@ -1,0 +1,61 @@
+.ta {
+	background-color:#ffc;
+	border:1px solid orange;
+	margin:0.5em 0;
+	padding:0.5em;
+	font-family:"Courier New", monospace;
+	font-size:0.8rem;
+}
+
+.success {
+	margin:0.5em 0;
+	padding:0.2em;
+	border-left:10px solid green;
+	font-style:italic;
+}
+.error {
+	margin:0.5em 0;
+	padding:0.2em;
+	border-left:10px solid red;
+	font-weight:bold;
+	color:red;
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    min-width: 1000px;
+    border-collapse: collapse;
+}
+
+td input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.download-button {
+    display: inline-block;
+    padding: 0.6em 1em;
+    background: #2d7dd2;
+	margin: 10px 0;
+    color: white;
+	border: 1px solid #888;
+    text-decoration: none;
+    border-radius: 6px;
+}
+
+            .download-button222 {
+                display: inline-block;
+                padding: 10px 20px;
+                margin: 10px 0;
+                background-color: #4CAF50;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;
+            }
+            .download-button:hover {
+                background-color: #45a049;
+            }

@@ -1,9 +1,12 @@
 <?php
 require("includes/config.inc.php");
 require("includes/common.inc.php");
-require("includes/image_functions.inc.php");
-require("includes/zip_functions.inc.php");
 require("includes/message_functions.inc.php");
+require("includes/filename_functions.inc.php");
+require("includes/image_functions.inc.php");
+require("includes/upload_functions.inc.php");
+require("includes/validation_functions.inc.php");
+require("includes/zip_functions.inc.php");
 
 
 error_reporting(E_ALL);
@@ -90,15 +93,14 @@ if (isset($_POST["HC"])) {
 
 
 if (!empty($convertedFiles)) {
-    $zipName = createZip($convertedFiles, $zielMappe, $batchId);
+    $zipName = createZipA($convertedFiles, $zielMappe, $batchId);
 
     if ($zipName !== false) {
-        $zipLink = '<a class="download-btn" href="download_zip.php?batch=' . rawurlencode($batchId) . '">Alle Bilder als ZIP herunterladen</a>';
+        $zipLink = '<a class="download-button" href="download_zip.php?batch=' . rawurlencode($batchId) . '">Alle Bilder als ZIP herunterladen</a>';
     } else {
         $msg .= errorMessage("Die ZIP-Datei konnte nicht erstellt werden.");
     }
 }
-
 
 ?>
 <!doctype html>
@@ -107,29 +109,7 @@ if (!empty($convertedFiles)) {
 		<title>Bildkonverter</title>
 		<meta charset="utf-8">
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.css">
-		<style>
-            .success {
-                    margin:0.5em 0;
-                    padding:0.2em;
-                    border-left:10px solid green;
-                    font-style:italic;
-                }
-            .error {
-                    margin:0.5em 0;
-                    padding:0.2em;
-                    border-left:10px solid red;
-                    font-weight:bold;
-                    color:red;
-                }
-
-            .download-btn {
-                    display: inline-block;
-                    padding: 0.6em 1em;
-                    text-decoration: none;
-                    border: 1px solid #888;
-                    border-radius: 6px;
-                }
-        </style>
+        <link rel="stylesheet" href="css/common.css">
 	</head>
 	<body>
 		<h1>Bildkonverter für mehrere Dateien</h1>
