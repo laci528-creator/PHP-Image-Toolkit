@@ -100,11 +100,12 @@ if (!empty($convertedFiles)) {
         <link rel="stylesheet" href="css/common.css">
 	</head>
 	<body>
+        <?php require("includes/header.inc.php"); ?>
 		<h1>Bildformat Konverter</h1>
 		
 		<form method="post" enctype="multipart/form-data">
 			<label>
-				Bitte wählen Sie eine Bilddatei aus (jpeg, gif, png, webp, avif):
+				Bitte wählen Sie eine Bilddatei aus (jpeg, gif, png, webp, avif)[Maximal 6 Dateien]:
 				<input type="file" name="myUpload[]" multiple accept="image/jpeg,image/png,image/gif,image/webp,image/avif"><br>
 			</label><br>
             <label>
@@ -125,6 +126,9 @@ if (!empty($convertedFiles)) {
         <?php
             echo($msg3);
             echo($msg);
+            ?>
+            <h2>Vorschau der konvertierten Bilder</h2>
+			<?php
             echo($msg2);
         ?>
     </body>

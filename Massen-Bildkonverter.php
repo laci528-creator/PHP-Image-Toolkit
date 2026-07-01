@@ -112,6 +112,7 @@ if (!empty($convertedFiles)) {
         <link rel="stylesheet" href="css/common.css">
 	</head>
 	<body>
+        <?php require("includes/header.inc.php"); ?>
 		<h1>Bildkonverter für mehrere Dateien</h1>
 		
 		<form method="post" enctype="multipart/form-data">

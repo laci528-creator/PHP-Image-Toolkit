@@ -110,11 +110,12 @@ if (!empty($convertedFiles)) {
         <link rel="stylesheet" href="css/common.css">
 	</head>
 	<body>
+    <?php require("includes/header.inc.php"); ?>
 <h1>Wasserzeichen zu Bildern hinzufügen</h1>
 		
 <form method="post" enctype="multipart/form-data">
     <label>
-        Bilder auswählen:
+        Bilder auswählen (maximal <?php echo $maxFiles; ?>, nur JPG):
         <input type="file" name="images[]" multiple accept="image/jpeg">
     </label>
 
@@ -141,11 +142,10 @@ if (!empty($convertedFiles)) {
 
     <input type="submit" value="Wasserzeichen hinzufügen">
 </form>
-		<?php
-            echo($msg3);
-            echo($msg);
-			echo($msg2);
-			
-		?>
+
+		<?php echo($msg3);
+            echo($msg); ?>
+            <h2>Vorschau der konvertierten Bilder</h2>
+			<?php echo($msg2); ?>
 	</body>
 </html>
