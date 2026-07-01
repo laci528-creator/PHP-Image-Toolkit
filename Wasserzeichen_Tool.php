@@ -1,14 +1,13 @@
 <?php
 require("includes/config.inc.php");
 require("includes/common.inc.php");
-//require("includes/dateisystem.inc.php");
 
 //ta($_POST);
 //ta($_FILES);
 
 $msg = "";
 $msg2 = "";
-
+$msg3 = "";
 
 function addWatermark(
     string $imagePath,
@@ -86,6 +85,11 @@ function addWatermark(
         mkdir($outputDir, 0777, true);
     }
 
+    
+
+
+
+
     $ok = imagejpeg($image, $outputPath, 90);
 
     imagedestroy($image);
@@ -93,7 +97,6 @@ function addWatermark(
 
     return $ok;
 }
-
 
 function getUploadedFileByIndex(array $files, int $index): array
 {
@@ -131,6 +134,28 @@ function validateOpacity(mixed $opacity): array
         "opacity" => $opacity
     ];
 }
+
+function createZip(array $files, string $zipPath): bool
+{
+    if (!is_dir(dirname($zipPath))) {
+        mkdir(dirname($zipPath), 0777, true);
+    }
+
+    $zip = new ZipArchive();
+
+    if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+        return false;
+    }
+
+    foreach ($files as $filePath) {
+        if (file_exists($filePath)) {
+            $zip->addFile($filePath, basename($filePath));
+        }
+    }
+
+    return $zip->close();
+}
+
 
 $maxFiles = 10; // Maximale Anzahl an Dateien, die hochgeladen werden können
 
@@ -171,6 +196,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                                     $o
                                                 );
                                                     if ($ok) {
+                                                        $convertedFiles[] = './output_image/' . $newFilename;
                                                         $msg .= '<p class="success">Wasserzeichen erfolgreich zu ' . htmlspecialchars($filename) . ' hinzugefügt.</p>';
                                                         $msg2 .= '<h3>Preview Image - ' . htmlspecialchars($newFilename) . '</h3><img src="./output_image/'. htmlspecialchars($newFilename) .'" alt="Konvertiertes Bild" style="max-width: 1000px; margin: 10px;">';
                                                     } else {
@@ -201,6 +227,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 }
 
+if (!empty($convertedFiles)) {
+    $zipName = 'converted_images_' . bin2hex(random_bytes(6)) . '.zip';
+    $zipPath = './zip/' . $zipName;
+
+    $zipCreated = createZip($convertedFiles, $zipPath);
+
+    if ($zipCreated) {
+
+    $msg3 = '<p><a class="download-button" href="' . htmlspecialchars($zipPath) . '" download>Alle Bilder als ZIP herunterladen</a></p>';
+    }
+    else {
+        $msg3 = '<p class="error">Die ZIP-Datei konnte nicht erstellt werden.</p>';
+    }
+}
+
 ?>
 <!doctype html>
 <html lang="de">
@@ -208,8 +249,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 		<title>Bildverarbeitung</title>
 		<meta charset="utf-8">
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.css">
-
         <style>
+            .download-button {
+                display: inline-block;
+                padding: 10px 20px;
+                margin: 10px 0;
+                background-color: #4CAF50;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;
+            }
+            .download-button:hover {
+                background-color: #45a049;
+            }
             .success {
                     margin:0.5em 0;
                     padding:0.2em;
@@ -257,10 +309,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     <input type="submit" value="Wasserzeichen hinzufügen">
 </form>
-
 		<?php
+            echo($msg3);
             echo($msg);
 			echo($msg2);
+			
 		?>
 	</body>
 </html>

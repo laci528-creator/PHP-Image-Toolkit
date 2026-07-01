@@ -7,6 +7,7 @@ require("includes/Format_converter_function.inc.php");
 $msg = "";
 $msg2 = "";
 $msg3 = "";
+$convertedFiles = [];
 
 function validateUploadedImage(array $file, int $maxFileSize = 8388608): array
 {
@@ -49,7 +50,6 @@ function validateUploadedImage(array $file, int $maxFileSize = 8388608): array
         "mime" => $mimeType
     ];
 }
-
 
 function validateQuality(mixed $quality): array
 {
@@ -199,7 +199,7 @@ if (!empty($convertedFiles)) {
 
     if ($zipCreated) {
 
-    $msg3 = $msg3 = '<p><a class="download-button" href="' . htmlspecialchars($zipPath) . '" download>Alle Bilder als ZIP herunterladen</a></p>';
+    $msg3 = '<p><a class="download-button" href="' . htmlspecialchars($zipPath) . '" download>Alle Bilder als ZIP herunterladen</a></p>';
     }
     else {
         $msg3 = '<p class="error">Die ZIP-Datei konnte nicht erstellt werden.</p>';
