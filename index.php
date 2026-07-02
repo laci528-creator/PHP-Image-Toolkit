@@ -17,17 +17,17 @@ require("includes/common.inc.php");
 
 <div class="tool-grid">
 
-    <a class="tool-card" href="Massen-Bildkonverter.php">
+    <a class="tool-card" href="resize.php">
         <h2>Bilder skalieren</h2>
         <p>Mehrere Bilder hochladen, skalieren und als ZIP herunterladen.</p>
     </a>
 
-    <a class="tool-card" href="Format converter.php">
+    <a class="tool-card" href="convert.php">
         <h2>Format konvertieren</h2>
         <p>Bilder in JPEG, PNG, WebP oder AVIF umwandeln.</p>
     </a>
 
-    <a class="tool-card" href="Wasserzeichen_Tool.php">
+    <a class="tool-card" href="watermark.php">
         <h2>Wasserzeichen hinzufügen</h2>
         <p>Mehrere JPG-Bilder mit einem PNG-Wasserzeichen versehen.</p>
     </a>
