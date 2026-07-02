@@ -1,139 +1,158 @@
-# PHP-Multi_Image-Converter Englisch und Deutsche sprache
+# PHP Image Toolkit
 
-PHP Multi-Image Converter
+This README is available in English and German.  
+Diese README ist auf Englisch und Deutsch verfügbar.
 
-A PHP-based web application for uploading, resizing, previewing, and downloading multiple images as a ZIP archive.
+[English](#english) | [Deutsch](#deutsch)
 
-Features
+---
 
-  upload multiple images at once
-  process up to 20 files per upload
-  supported formats:
-      JPG / JPEG
-      GIF
-      PNG
-      WebP
-      AVIF
-  resize images based on the longer side
-  server-side validation
-  preview converted images
-  ZIP download for all processed files
-  temporary batch folder handling
-  automatic cleanup after download
+## English
 
-Tech Stack
-  
-  PHP 8+
-  HTML5
-  CSS3
-  Water.css
-  ZipArchive
-  fileinfo
+A simple PHP-based image processing toolkit for resizing, converting and watermarking images.
 
-How It Works
+## Features
 
-  Select up to 20 image files.
-  Enter the target size in pixels.
-  The application validates the files and input.
-  Images are uploaded into a temporary batch folder.
-  The images are resized and previewed.
-  A ZIP archive is generated from the converted files.
-  After download, the batch folder is deleted automatically.
+* resize multiple images
+* convert image formats
+* add a PNG watermark to JPG images
+* choose image quality for converted images
+* choose watermark position and opacity
+* preview processed images in the browser
+* open processed images in original size
+* download processed images as a ZIP file
+* automatic cleanup of temporary batch folders after ZIP download
 
-Validation
+## Technologies Used
 
-  at least 1 file is required
-  maximum 20 files per upload
-  resolution must be an integer
-  resolution must be between 50 and 5000 pixels
-  only allowed image MIME types are accepted
+* PHP
+* PHP GD Library
+* PHP ZipArchive
+* PHP fileinfo
+* HTML / CSS
+* Water.css
+* XAMPP
+* Git / GitHub
 
-Notes
+## Files
 
-  uploaded files are grouped into temporary batch folders
-  the ZIP file and related images are deleted after download
-  files with the same name in the same batch may overwrite each other
-  
-Possible Improvements
+* index.php – start page and navigation
+* resize.php – resize multiple images
+* convert.php – convert images to another format
+* watermark.php – add a PNG watermark to JPG images
+* download_zip.php – ZIP download and cleanup
+* includes/ – configuration, validation, image, upload, filename, ZIP and batch helper functions
+* css/ – custom styling
 
-  safer duplicate file handling
-  finfo_file() based MIME validation
-  CSRF protection
-  drag and drop upload
-  improved UI
-  scheduled cleanup for abandoned batch folders
+## Main Functions
 
-Author
+The project currently contains three image tools:
 
-Laszlo Haraszti
-Personal learning / portfolio project.
+* Bilder skalieren – resize several images while keeping the aspect ratio
+* Bildformat konvertieren – convert images to JPEG, PNG, WebP or AVIF
+* Wasserzeichen hinzufügen – add a PNG watermark to multiple JPG images
 
-------------------------------------------------------------------------------------------------------------------
-PHP Mehrfach-Bildkonverter
+## Current Status
 
-Eine PHP-basierte Webanwendung zum Hochladen, Skalieren, Anzeigen und Herunterladen mehrerer Bilder als ZIP-Archiv.
+The project already has a working basic version.
 
-Funktionen
+Image resizing, format conversion, watermarking, preview display, ZIP download and temporary batch cleanup have already been implemented.
 
-  mehrere Bilder gleichzeitig hochladen
-  bis zu 20 Dateien pro Upload verarbeiten
-  unterstützte Formate:
-    JPG / JPEG
-    GIF
-    PNG
-    WebP
-    AVIF
-  Größenanpassung anhand der längeren Bildseite
-  serverseitige Validierung
-  Vorschau der konvertierten Bilder
-  ZIP-Download aller verarbeiteten Dateien
-  temporäre Batch-Ordner-Verwaltung
-  automatische Bereinigung nach dem Download
-  
-Verwendete Technologien
+The application uses helper functions for validation, filename handling, image processing, ZIP creation and batch folder management.
 
-  PHP 8+
-  HTML5
-  CSS3
-  Water.css
-  ZipArchive
-  fileinfo
+## Planned Improvements
 
-Funktionsweise
+* improved user interface
+* drag and drop upload
+* CSRF protection
+* support for PNG and WebP images in the watermark tool
+* text watermark option
+* better handling of very large images
+* automatic cleanup for abandoned batch folders
+* more detailed error messages
+* optional live demo deployment
 
-  Bis zu 20 Bilddateien auswählen.
-  Die Zielgröße in Pixeln eingeben.
-  Die Anwendung prüft Dateien und Eingaben.
-  Die Bilder werden in einen temporären Batch-Ordner hochgeladen.
-  Die Bilder werden skaliert und als Vorschau angezeigt.
-  Aus den konvertierten Dateien wird ein ZIP-Archiv erstellt.
-  Nach dem Download wird der Batch-Ordner automatisch gelöscht.
+## Developer
 
-Validierung
+László Haraszti
 
-  mindestens 1 Datei ist erforderlich
-  maximal 20 Dateien pro Upload
-  die Auflösung muss eine Ganzzahl sein
-  die Auflösung muss zwischen 50 und 5000 Pixel liegen
-  nur erlaubte Bild-MIME-Typen werden akzeptiert
-  
-Hinweise
+## Note
 
-  hochgeladene Dateien werden in temporären Batch-Ordnern gespeichert
-  die ZIP-Datei und die zugehörigen Bilder werden nach dem Download gelöscht
-  Dateien mit gleichem Namen innerhalb desselben Batchs können einander überschreiben
-  
-Mögliche Erweiterungen
+This project was created for learning and portfolio purposes and is still under development.
 
-  sicherere Behandlung doppelter Dateinamen
-  MIME-Prüfung mit finfo_file()
-  CSRF-Schutz
-  Drag-and-Drop-Upload
-  verbesserte Benutzeroberfläche
-  geplante Bereinigung nicht heruntergeladener Batch-Ordner
-  
-Autor
+---
 
-Laszlo Haraszti
-Persönliches Lern- / Portfolio-Projekt.
+## Deutsch
 
+# PHP Image Toolkit
+
+Eine einfache PHP-basierte Anwendung zur Bildverarbeitung.
+
+## Funktionen
+
+* mehrere Bilder skalieren
+* Bildformate konvertieren
+* PNG-Wasserzeichen zu JPG-Bildern hinzufügen
+* Bildqualität bei der Konvertierung auswählen
+* Position und Transparenz des Wasserzeichens auswählen
+* verarbeitete Bilder im Browser anzeigen
+* verarbeitete Bilder in Originalgröße öffnen
+* verarbeitete Bilder als ZIP-Datei herunterladen
+* automatische Löschung temporärer Batch-Ordner nach dem ZIP-Download
+
+## Verwendete Technologien
+
+* PHP
+* PHP GD Library
+* PHP ZipArchive
+* PHP fileinfo
+* HTML / CSS
+* Water.css
+* XAMPP
+* Git / GitHub
+
+## Dateien
+
+* index.php – Startseite und Navigation
+* resize.php – mehrere Bilder skalieren
+* convert.php – Bilder in ein anderes Format konvertieren
+* watermark.php – PNG-Wasserzeichen zu JPG-Bildern hinzufügen
+* download_zip.php – ZIP-Download und Bereinigung
+* includes/ – Konfiguration, Validierung, Bildverarbeitung, Upload-, Dateinamen-, ZIP- und Batch-Hilfsfunktionen
+* css/ – eigene CSS-Anpassungen
+
+## Hauptfunktionen
+
+Das Projekt enthält derzeit drei Bildwerkzeuge:
+
+* Bilder skalieren – mehrere Bilder unter Beibehaltung des Seitenverhältnisses skalieren
+* Bildformat konvertieren – Bilder in JPEG, PNG, WebP oder AVIF konvertieren
+* Wasserzeichen hinzufügen – ein PNG-Wasserzeichen zu mehreren JPG-Bildern hinzufügen
+
+## Aktueller Stand
+
+Das Projekt verfügt bereits über eine funktionierende Basisversion.
+
+Das Skalieren von Bildern, die Formatkonvertierung, das Hinzufügen von Wasserzeichen, die Vorschau, der ZIP-Download und die automatische Löschung temporärer Batch-Ordner sind bereits umgesetzt.
+
+Die Anwendung verwendet Hilfsfunktionen für Validierung, Dateinamen, Bildverarbeitung, ZIP-Erstellung und Batch-Ordnerverwaltung.
+
+## Geplante Weiterentwicklungen
+
+* verbesserte Benutzeroberfläche
+* Drag-and-drop-Upload
+* CSRF-Schutz
+* Unterstützung von PNG- und WebP-Bildern im Wasserzeichen-Tool
+* Text-Wasserzeichen
+* bessere Behandlung sehr großer Bilder
+* automatische Bereinigung nicht heruntergeladener Batch-Ordner
+* ausführlichere Fehlermeldungen
+* optionales Live-Demo-Deployment
+
+## Entwickler
+
+László Haraszti
+
+## Hinweis
+
+Dieses Projekt wurde zu Lern- und Portfoliozwecken erstellt und wird derzeit weiterentwickelt.
