@@ -135,9 +135,12 @@ if (!empty($convertedFiles)) {
                 </label>
                 <input type="submit" value="Wasserzeichen hinzufügen">
             </form>
-		    <?php echo($msg3);
-            echo($msg); ?>
-        <h2>Vorschau der konvertierten Bilder</h2>
-		<?php echo($msg2); ?>
+		    <?php echo($msg3); ?>
+            <?php echo($msg); ?>
+            <?php if (!empty($msg2)): ?>
+                <h2>Vorschau der konvertierten Bilder</h2>
+            <?php echo($msg2); ?>
+            <?php endif; ?>
+    </body>
 	</body>
 </html>

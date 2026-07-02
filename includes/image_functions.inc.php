@@ -61,12 +61,16 @@ if (!file_exists($pfad)) {
 
 }
 
-function Convert_Bild(string $pfad, int $size_neu): bool {
+function Convert_Bild(string $pfad, int $size_neu, string $pfad_neu): bool {
     $ok = false;
 
-    if (file_exists($pfad) && $size_neu > 0) {
+    if (!file_exists($pfad) || $size_neu <= 0) {
+        return false;
+    }
         $bildinfos = getimagesize($pfad);
-        if ($bildinfos === false) {
+
+
+        if ($bildinfos === false || !isset($bildinfos['mime'])) {
             return false;
         }
 
@@ -87,21 +91,6 @@ function Convert_Bild(string $pfad, int $size_neu): bool {
             $breite_neu = (int) floor($hoehe_neu * $seitenverhaltnis);
         }
 
-        $dateiinfos = pathinfo($pfad);
-        $nameOhneExt = $dateiinfos["filename"];
-        $ext = $dateiinfos["extension"];
-        $neuerDateiname = $nameOhneExt . "_" . $size_neu . "px." . $ext;
-
-        $verzeichnis = $dateiinfos["dirname"] . "/" . $size_neu . "/";
-        $pfad_neu = $verzeichnis . $neuerDateiname;
-
-        if (!file_exists($verzeichnis)) {
-            $ok = mkdir($verzeichnis, 0755, true);
-        } else {
-            $ok = true;
-        }
-
-        if ($ok) {
             switch ($bildinfos["mime"]) {
                 case "image/jpeg":
                     $resource_alt = imagecreatefromjpeg($pfad);
@@ -133,10 +122,7 @@ function Convert_Bild(string $pfad, int $size_neu): bool {
                     $ok = imagegif($resource_neu, $pfad_neu);
                     break;
             }
-        }
-    }
-
-    if (isset($resource_alt) && $resource_alt instanceof GdImage) {
+            if (isset($resource_alt) && $resource_alt instanceof GdImage) {
         imagedestroy($resource_alt);
     }
 
@@ -145,7 +131,9 @@ function Convert_Bild(string $pfad, int $size_neu): bool {
     }
 
     return $ok;
+
 }
+
 
 function buildPreview(string $mappe, string $originalName, int $groesse): string {
     $info = pathinfo($originalName);
@@ -153,7 +141,6 @@ function buildPreview(string $mappe, string $originalName, int $groesse): string
 
     return '<img style="max-width:300px;height:auto;" src="' . $mappe . $groesse . '/' . rawurlencode($neuerDateiname) . '"><br><p>' . htmlspecialchars($neuerDateiname) . '</p>';
 }
-
 
 
 function addWatermark(

@@ -43,7 +43,6 @@ function validateUploadedImage(array $file, int $maxFileSize = 8388608): array
 }
 
 
-
 function validateOpacity(mixed $opacity): array
 {
     $opacity = filter_var($opacity, FILTER_VALIDATE_INT);
@@ -60,8 +59,6 @@ function validateOpacity(mixed $opacity): array
         "opacity" => $opacity
     ];
 }
-
-
 
 
 function validateQuality(mixed $quality): array
@@ -82,8 +79,6 @@ function validateQuality(mixed $quality): array
 }
 
 
-
-
 function validateOutputFormat(mixed $format): array
 {
     $allowedFormats = ["jpeg", "png", "webp", "avif"];
@@ -100,5 +95,23 @@ function validateOutputFormat(mixed $format): array
         "format" => $format
     ];
 }
+
+
+function validateResolution(mixed $resolution): array
+ {
+    $resolution = filter_var($resolution, FILTER_VALIDATE_INT);
+
+    if ($resolution === false || $resolution < 50 || $resolution > 4000) {
+        return [
+            "success" => false,
+            "message" => "Bitte geben Sie eine Auflösung zwischen 50 und 4000 Pixel an."
+        ];
+    }
+    return [
+        "success" => true,
+        "resolution" => $resolution
+    ];
+}
+
 
 ?>

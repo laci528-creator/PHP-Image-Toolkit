@@ -9,125 +9,126 @@ require("includes/validation_functions.inc.php");
 require("includes/zip_functions.inc.php");
 
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-$batchId = "";
-$zielMappe = "";
 $msg = "";
 $msg2 = "";
-$zipLink = "";
-$convertedFiles = [];
-$whitelist = ["image/jpeg","image/gif","image/png","image/webp","image/avif"];
+$msg3 = "";
+$resizedFiles = [];
 
-if (isset($_POST["HC"])) {
-    if (isset($_FILES["myUpload"]["name"][0]) && !empty($_FILES["myUpload"]["name"][0])) {
-        if (!empty($_POST["neu_resolution"])) {
-            $f = $_FILES["myUpload"];
-            $neuResolution = filter_input(INPUT_POST, 'neu_resolution', FILTER_VALIDATE_INT);
+$maxFiles = 20;
 
-            if ($neuResolution === false || $neuResolution === null || $neuResolution < 50 || $neuResolution > 5000) {
-                $msg .= errorMessage("Bitte geben Sie eine gültige Auflösung zwischen 50 und 5000 Pixel an.");
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if (!empty($_FILES["myUpload"]["name"][0]) && isset($_POST["neu_resolution"]) && $_POST["neu_resolution"] !== "") {
+        $resolution = $_POST["neu_resolution"];
+        $validationResult = validateResolution($resolution);
+            if ($validationResult["success"] === true) {
+                $neuResolution = $validationResult["resolution"];
+                $f = $_FILES["myUpload"];
+                $fileCount = count($f["name"]);
 
-            } elseif (count($f["name"]) > 20) {
-                $msg .= errorMessage("Bitte laden Sie maximal 20 Bilddateien hoch.");
-
-            } else {
-                $batchId = uniqid();
-                $zielMappe = "./uploads_bildconverter/" . $batchId . "/";
-                if (!is_dir($zielMappe) && !mkdir($zielMappe, 0755, true)) {
-                    $msg .= errorMessage("Der Zielordner konnte nicht erstellt werden.");
-                } else {
-                    for ($i = 0; $i < count($f["name"]); $i++) {
-                        $originalName = $f["name"][$i];
-
-                        if ($f["error"][$i] !== 0) {
-                            $msg .= errorMessage("Leider ist beim Upload der Datei <strong>" . htmlspecialchars($originalName) . "</strong> ein Fehler aufgetreten.");
-                            continue;
-                        }
-
-                        $echterMime = mime_content_type($f["tmp_name"][$i]);
-
-                        if ($echterMime === false || !in_array($echterMime, $whitelist)) {
-                            $msg .= errorMessage("Leider nicht erlaubte Datei <strong>" . htmlspecialchars($originalName) . "</strong>.");
-                            continue;
-                        }
-                        
-                        $zielDatei = $zielMappe . basename($originalName);
-                        $okUpload = move_uploaded_file($f["tmp_name"][$i], $zielDatei);
-
-                        if (!$okUpload) {
-                            $msg .= errorMessage("Leider konnte die Datei <strong>" . htmlspecialchars($originalName) . "</strong> nicht gespeichert werden.");
-                            continue;
-                        }
-
-                        $okConvert = Convert_Bild($zielDatei, $neuResolution);
-
-                        if ($okConvert) {
-                            $pathInfo = pathinfo($originalName);
-                            $neuerDateiname = $pathInfo["filename"] . "_" . $neuResolution . "px." . $pathInfo["extension"];
-
-                            $convertedPfad = $zielMappe . $neuResolution . "/" . $neuerDateiname;
-                            $convertedFiles[] = $convertedPfad;
-
-
-                            $msg .= successMessage("Die Datei <strong>" . htmlspecialchars($originalName) . "</strong> wurde erfolgreich hochgeladen und konvertiert.");
-                            $msg2 .= buildPreview($zielMappe, $originalName, $neuResolution);
-                        } else {
-                            $msg .= errorMessage("Die Datei <strong>" . htmlspecialchars($originalName) . "</strong> wurde hochgeladen, aber die Konvertierung ist fehlgeschlagen.");
-                        }
+                if($fileCount <= $maxFiles) {
+                    if (!is_dir('./output_image/')) {
+                        mkdir('./output_image/', 0755, true);
                     }
+
+                        for ($i = 0; $i < $fileCount; $i++) {   
+                            $file = getUploadedFileByIndex($f, $i);
+                            $filename = $file["name"];
+                            $validation = validateUploadedImage($file);
+                                if($validation['success'] === true)  { 
+
+                                    $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+                                    $newFilename = createSafeFilename($filename, $extension);
+                                    $newFilenameWithResolution = pathinfo($newFilename, PATHINFO_FILENAME) . "_" . $neuResolution . "." . $extension;
+
+                                    $outputPath = './output_image/' . $newFilenameWithResolution;
+                                    $inputPath = $file["tmp_name"];
+                                    // ta($newFilenameWithResolution);
+
+                                    $ok = Convert_Bild($inputPath, $neuResolution, $outputPath);
+
+                                        if ($ok) {
+                                            $resizedFiles[] = $outputPath;
+
+                                            $imageSize = getimagesize($outputPath);
+                                            $width = $imageSize[0] ?? 0;
+                                            $height = $imageSize[1] ?? 0;
+
+                                            $msg .= '<p class="success">Die Datei <strong>' . htmlspecialchars($newFilenameWithResolution) . '</strong> wurde erfolgreich auf ' . htmlspecialchars((string)$width) . ' x ' . htmlspecialchars((string)$height) . ' px skaliert.</p>';
+                                                $msg2 .= '<div class="preview-card">';
+                                                $msg2 .= '<h3>Preview Image - ' . htmlspecialchars($newFilenameWithResolution) . '</h3>';
+                                                $msg2 .= '<p>Neue Bildgröße: ' . htmlspecialchars((string)$width) . ' × ' . htmlspecialchars((string)$height) . ' px</p>';
+                                                $msg2 .= '<img src="./output_image/' . htmlspecialchars($newFilenameWithResolution) . '" alt="Skaliertes Bild">';
+                                                $msg2 .= '<p><a href="./output_image/' . htmlspecialchars($newFilenameWithResolution) . '" target="_blank">Bild in Originalgröße öffnen</a></p>';
+                                                $msg2 .= '</div>';
+                                        } else {
+                                            $msg .= '<p class="error">Die Datei <strong>' . htmlspecialchars($filename) . '</strong> wurde hochgeladen, aber die Konvertierung ist fehlgeschlagen.</p>';
+                                        }
+
+                                }
+                                else {
+                                    $msg .= '<p class="error">Fehler bei der Datei <strong>' . htmlspecialchars($filename) . '</strong>: ' . htmlspecialchars($validation["message"]) . '</p>';
+                                }
+                        }
                 }
+                else {
+                    $msg = '<p class="error">Bitte laden Sie maximal ' . $maxFiles . ' Bilder hoch.</p>';
+                }
+
+            } 
+            else {
+                $msg = '<p class="error">' . htmlspecialchars($validationResult["message"]) . '</p>';
             }
-        } else {
-            $msg .= errorMessage("Bitte schreiben Sie die gewünschte Auflösung.");
-        }
-    } else {
-        $msg .= errorMessage("Bitte laden Sie mindestens eine Datei hoch.");
+    }
+    else {
+        $msg = '<p class="error">Bitte laden Sie mindestens eine Datei hoch und geben Sie die gewünschte Auflösung an.</p>';
     }
 }
 
+if (!empty($resizedFiles)) {
+    $zipName = 'resized_images_' . bin2hex(random_bytes(6)) . '.zip';
+    $zipPath = './zip/' . $zipName;
 
+    $zipCreated = createZip($resizedFiles, $zipPath);
 
-if (!empty($convertedFiles)) {
-    $zipName = createZipA($convertedFiles, $zielMappe, $batchId);
+        if ($zipCreated) {
 
-    if ($zipName !== false) {
-        $zipLink = '<a class="download-button" href="download_zip.php?batch=' . rawurlencode($batchId) . '">Alle Bilder als ZIP herunterladen</a>';
-    } else {
-        $msg .= errorMessage("Die ZIP-Datei konnte nicht erstellt werden.");
-    }
+        $msg3 = '<p><a class="download-button" href="' . htmlspecialchars($zipPath) . '" download>Alle Bilder als ZIP herunterladen</a></p>';
+        }
+        else {
+            $msg3 = '<p class="error">Die ZIP-Datei konnte nicht erstellt werden.</p>';
+        }
 }
 
 ?>
 <!doctype html>
 <html lang="de">
 	<head>
-		<title>Bildkonverter</title>
+		<title>Bilder skalieren</title>
 		<meta charset="utf-8">
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.css">
         <link rel="stylesheet" href="css/common.css">
 	</head>
 	<body>
         <?php require("includes/header.inc.php"); ?>
-		<h1>Bildkonverter für mehrere Dateien</h1>
+		<h1>Bildgröße für mehrere Dateien ändern</h1>
 		
 		<form method="post" enctype="multipart/form-data">
 			<label>
 				Bitte wählen Sie maximal 20 Bilddateien aus (JPG, GIF, PNG, WebP, AVIF):
-				<input type="file" name="myUpload[]" multiple><br>
+				<input type="file" name="myUpload[]" multiple accept="image/jpeg,image/png,image/gif,image/webp,image/avif"><br>
 			</label><br>
             <label>
-				Bitte wählen Sie die Länge (px) der längeren Seite des Bildes aus:
-                <input type="number" name="neu_resolution">
+				Bitte geben Sie die Länge der längeren Bildseite in Pixel an (Standard: 800 px):
+                <input type="number" name="neu_resolution" min="50" max="4000" value="800">
             </label>
 			<input type="submit" name="HC" value="Hochladen und Konvertieren">
 		</form>
         <br>
 		<?php echo($msg); ?>
-		<?php echo $zipLink; ?>
-        <h2>Vorschau der konvertierten Bilder</h2>
-		<?php
-		echo $msg2; ?>
+		<?php echo($msg3); ?>
+        <?php if (!empty($msg2)): ?>
+            <h2>Vorschau der konvertierten Bilder</h2>
+		<?php echo $msg2; ?>
+        <?php endif; ?>
 	</body>
 </html>
