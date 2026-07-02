@@ -6,11 +6,13 @@ require("includes/image_functions.inc.php");
 require("includes/upload_functions.inc.php");
 require("includes/validation_functions.inc.php");
 require("includes/zip_functions.inc.php");
+require("includes/batch_function.inc.php");
 
 
 $msg = "";
 $msg2 = "";
 $msg3 = "";
+$watermarkedFiles = [];
 
 $maxFiles = 10; // Maximale Anzahl an Dateien, die hochgeladen werden können
 
@@ -26,42 +28,51 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         $w = $_FILES["watermark"];
                         $watermarkName = $w["name"];
                         $watermarkTmpName = $w["tmp_name"];
+                            $position = validatePosition($_POST["position"] ?? "bottom-right");
                             $fino = finfo_open(FILEINFO_MIME_TYPE);
                             $watermarkMimeType = finfo_file($fino, $watermarkTmpName);
                             finfo_close($fino); 
                                 if ($watermarkMimeType === "image/png") {
-                                for ($i = 0; $i < $fileCount; $i++) {
+                                    $batch = createBatchPath('uploads_bildconverter');
 
-                                    $file = getUploadedFileByIndex($f, $i);
-                                    $filename = $file["name"];
-                                        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-                                        $mimeType = finfo_file($finfo, $file["tmp_name"]);
-                                        finfo_close($finfo);
-                                    if ($mimeType === "image/jpeg") {
-                                         $newFilename = createSafeFilename($filename, "jpeg");
+                                    for ($i = 0; $i < $fileCount; $i++) {
 
-                                         $outputPath = "output_image/" . $newFilename;
-                                         $inputPath = $file["tmp_name"];
+                                        $file = getUploadedFileByIndex($f, $i);
+                                        $filename = $file["name"];
+                                            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                                            $mimeType = finfo_file($finfo, $file["tmp_name"]);
+                                            finfo_close($finfo);
+                                        if ($mimeType === "image/jpeg") {
+                                            $newFilename = createSafeFilename($filename, "jpeg");
 
-                                                $ok = addWatermark(
-                                                    $inputPath,
-                                                    $watermarkTmpName,
-                                                    $outputPath,
-                                                    $_POST["position"] ?? "bottom-right",
-                                                    $o
-                                                );
-                                                    if ($ok) {
-                                                        $convertedFiles[] = './output_image/' . $newFilename;
-                                                        $msg .= '<p class="success">Wasserzeichen erfolgreich zu ' . htmlspecialchars($filename) . ' hinzugefügt.</p>';
-                                                        $msg2 .= '<h3>Preview Image - ' . htmlspecialchars($newFilename) . '</h3><img src="./output_image/'. htmlspecialchars($newFilename) .'" alt="Konvertiertes Bild" style="max-width: 1000px; margin: 10px;">';
-                                                    } else {
-                                                        $msg2 .= '<p class="error">Fehler beim Hinzufügen des Wasserzeichens zu ' . htmlspecialchars($filename) . '.</p>';
-                                                    }
-                                     }
-                                     else {
-                                        $msg .= '<p class="error"><strong>' . htmlspecialchars($filename) . '</strong>: Dieser Dateityp ist nicht erlaubt. Bitte laden Sie JPG-Dateien hoch.</p>';
+                                            $outputPath = $batch["outputDir"] . $newFilename;
+                                            $previewPath = $batch["publicOutputDir"] . $newFilename;
+                                            $inputPath = $file["tmp_name"];
+
+                                                    $ok = addWatermark(
+                                                        $inputPath,
+                                                        $watermarkTmpName,
+                                                        $outputPath,
+                                                        $position,
+                                                        $o
+                                                    );
+                                                        if ($ok) {
+                                                            $watermarkedFiles[] = $outputPath;
+
+                                                            $msg .= '<p class="success">Wasserzeichen erfolgreich zu ' . htmlspecialchars($filename) . ' hinzugefügt.</p>';
+                                                            $msg2 .= '<div class="preview-card">';
+                                                            $msg2 .= '<h3>Preview Image - ' . htmlspecialchars($newFilename) . '</h3>';
+                                                            $msg2 .= '<img src="' . htmlspecialchars($previewPath) . '" alt="Bild mit Wasserzeichen">';
+                                                            $msg2 .= '<p><a href="' . htmlspecialchars($previewPath) . '" target="_blank" rel="noopener noreferrer">Bild in Originalgröße öffnen</a></p>';
+                                                            $msg2 .= '</div>';
+                                                        } else {
+                                                            $msg .= '<p class="error">Fehler beim Hinzufügen des Wasserzeichens zu <strong>' . htmlspecialchars($filename) . '</strong>.</p>';
+                                                        }
+                                        }
+                                        else {
+                                            $msg .= '<p class="error"><strong>' . htmlspecialchars($filename) . '</strong>: Dieser Dateityp ist nicht erlaubt. Bitte laden Sie JPG-Dateien hoch.</p>';
+                                        }
                                     }
-                                }
                         }
                         else {
                             $msg = '<p class="error">Bitte laden Sie eine PNG-Datei als Wasserzeichen hoch.</p>';
@@ -82,26 +93,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 }
 
-if (!empty($convertedFiles)) {
-    $zipName = 'converted_images_' . bin2hex(random_bytes(6)) . '.zip';
-    $zipPath = './zip/' . $zipName;
+if (!empty($watermarkedFiles)) {
+    $zipPath = $batch["batchDir"] . $batch["batchId"] . '.zip';
 
-    $zipCreated = createZip($convertedFiles, $zipPath);
+    $zipCreated = createZip($watermarkedFiles, $zipPath);
 
-    if ($zipCreated) {
+        if ($zipCreated) {
 
-    $msg3 = '<p><a class="download-button" href="' . htmlspecialchars($zipPath) . '" download>Alle Bilder als ZIP herunterladen</a></p>';
-    }
-    else {
-        $msg3 = '<p class="error">Die ZIP-Datei konnte nicht erstellt werden.</p>';
-    }
+        $msg3 = '<p><a class="download-button" href="download_zip.php?batch=' . urlencode($batch["batchId"]) . '">Download ZIP-Datei</a></p>';
+        }
+        else {
+            $msg3 = '<p class="error">Die ZIP-Datei konnte nicht erstellt werden.</p>';
+        }
 }
 
 ?>
 <!doctype html>
 <html lang="de">
 	<head>
-		<title>Bildverarbeitung</title>
+		<title>Wasserzeichen hinzufügen</title>
 		<meta charset="utf-8">
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.css">
         <link rel="stylesheet" href="css/common.css">
@@ -138,9 +148,8 @@ if (!empty($convertedFiles)) {
 		    <?php echo($msg3); ?>
             <?php echo($msg); ?>
             <?php if (!empty($msg2)): ?>
-                <h2>Vorschau der konvertierten Bilder</h2>
+                <h2>Vorschau der Bilder mit Wasserzeichen</h2>
             <?php echo($msg2); ?>
             <?php endif; ?>
-    </body>
 	</body>
 </html>

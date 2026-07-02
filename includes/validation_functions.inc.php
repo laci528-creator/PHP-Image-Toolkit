@@ -114,4 +114,22 @@ function validateResolution(mixed $resolution): array
 }
 
 
+function validatePosition(mixed $position): string
+{
+    $allowedPositions = [
+        "bottom-right",
+        "bottom-left",
+        "top-right",
+        "top-left",
+        "center"
+    ];
+
+    if (!is_string($position) || !in_array($position, $allowedPositions, true)) {
+        return "bottom-right";
+    }
+
+    return $position;
+}
+
+
 ?>

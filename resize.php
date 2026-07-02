@@ -7,6 +7,7 @@ require("includes/image_functions.inc.php");
 require("includes/upload_functions.inc.php");
 require("includes/validation_functions.inc.php");
 require("includes/zip_functions.inc.php");
+require("includes/batch_function.inc.php");
 
 
 $msg = "";
@@ -26,9 +27,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $fileCount = count($f["name"]);
 
                 if($fileCount <= $maxFiles) {
-                    if (!is_dir('./output_image/')) {
-                        mkdir('./output_image/', 0755, true);
-                    }
+
+                        $batch = createBatchPath('uploads_bildconverter');
 
                         for ($i = 0; $i < $fileCount; $i++) {   
                             $file = getUploadedFileByIndex($f, $i);
@@ -40,7 +40,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                     $newFilename = createSafeFilename($filename, $extension);
                                     $newFilenameWithResolution = pathinfo($newFilename, PATHINFO_FILENAME) . "_" . $neuResolution . "." . $extension;
 
-                                    $outputPath = './output_image/' . $newFilenameWithResolution;
+                                    $outputPath = $batch["outputDir"] . $newFilenameWithResolution;
+                                    $previewPath = $batch["publicOutputDir"] . $newFilenameWithResolution;
+
                                     $inputPath = $file["tmp_name"];
                                     // ta($newFilenameWithResolution);
 
@@ -56,12 +58,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                             $msg .= '<p class="success">Die Datei <strong>' . htmlspecialchars($newFilenameWithResolution) . '</strong> wurde erfolgreich auf ' . htmlspecialchars((string)$width) . ' x ' . htmlspecialchars((string)$height) . ' px skaliert.</p>';
                                                 $msg2 .= '<div class="preview-card">';
                                                 $msg2 .= '<h3>Preview Image - ' . htmlspecialchars($newFilenameWithResolution) . '</h3>';
-                                                $msg2 .= '<p>Neue Bildgröße: ' . htmlspecialchars((string)$width) . ' × ' . htmlspecialchars((string)$height) . ' px</p>';
-                                                $msg2 .= '<img src="./output_image/' . htmlspecialchars($newFilenameWithResolution) . '" alt="Skaliertes Bild">';
-                                                $msg2 .= '<p><a href="./output_image/' . htmlspecialchars($newFilenameWithResolution) . '" target="_blank">Bild in Originalgröße öffnen</a></p>';
+                                                $msg2 .= '<p>Neue Bildgröße: ' . htmlspecialchars((string)$width) . ' x ' . htmlspecialchars((string)$height) . ' px</p>';
+                                                $msg2 .= '<img src="' . htmlspecialchars($previewPath) . '" alt="Skaliertes Bild">';
+                                                $msg2 .= '<p><a href="' . htmlspecialchars($previewPath) . '" target="_blank" rel="noopener noreferrer">Bild in Originalgröße öffnen</a></p>';
                                                 $msg2 .= '</div>';
                                         } else {
-                                            $msg .= '<p class="error">Die Datei <strong>' . htmlspecialchars($filename) . '</strong> wurde hochgeladen, aber die Konvertierung ist fehlgeschlagen.</p>';
+                                            $msg .= '<p class="error">Die Datei <strong>' . htmlspecialchars($filename) . '</strong> wurde hochgeladen, aber die Skalierung ist fehlgeschlagen.</p>';
                                         }
 
                                 }
@@ -85,14 +87,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 
 if (!empty($resizedFiles)) {
-    $zipName = 'resized_images_' . bin2hex(random_bytes(6)) . '.zip';
-    $zipPath = './zip/' . $zipName;
+    $zipPath = $batch["batchDir"] . $batch["batchId"] . '.zip';
 
     $zipCreated = createZip($resizedFiles, $zipPath);
 
         if ($zipCreated) {
 
-        $msg3 = '<p><a class="download-button" href="' . htmlspecialchars($zipPath) . '" download>Alle Bilder als ZIP herunterladen</a></p>';
+        $msg3 = '<p><a class="download-button" href="download_zip.php?batch=' . urlencode($batch["batchId"]) . '">Download ZIP-Datei</a></p>';
         }
         else {
             $msg3 = '<p class="error">Die ZIP-Datei konnte nicht erstellt werden.</p>';
@@ -121,13 +122,13 @@ if (!empty($resizedFiles)) {
 				Bitte geben Sie die Länge der längeren Bildseite in Pixel an (Standard: 800 px):
                 <input type="number" name="neu_resolution" min="50" max="4000" value="800">
             </label>
-			<input type="submit" name="HC" value="Hochladen und Konvertieren">
+			<input type="submit" name="HC" value="Hochladen und Skalieren">
 		</form>
         <br>
 		<?php echo($msg); ?>
 		<?php echo($msg3); ?>
         <?php if (!empty($msg2)): ?>
-            <h2>Vorschau der konvertierten Bilder</h2>
+            <h2>Vorschau der skalierten Bilder</h2>
 		<?php echo $msg2; ?>
         <?php endif; ?>
 	</body>
