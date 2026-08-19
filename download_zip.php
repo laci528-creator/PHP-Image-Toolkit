@@ -1,31 +1,6 @@
 <?php
 require_once __DIR__ . "/includes/config.inc.php";
-
-function deleteDirectory(string $ordner): void {
-    if (!is_dir($ordner)) {
-        return;
-    }
-
-    $eintraege = scandir($ordner);
-    if ($eintraege === false) {
-        return;
-    }
-    foreach ($eintraege as $eintrag) {
-        if ($eintrag === '.' || $eintrag === '..') {
-            continue;
-        }
-
-        $vollerPfad = $ordner . $eintrag;
-
-        if (is_dir($vollerPfad)) {
-            deleteDirectory($vollerPfad . '/');
-        } else {
-            unlink($vollerPfad);
-        }
-    }
-    
-    rmdir($ordner);
-};
+require_once __DIR__ . "/includes/batch_functions.inc.php";
 
 
 if (!isset($_GET['batch']) || $_GET['batch'] === '') {
