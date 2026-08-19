@@ -29,20 +29,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         $watermarkName = $w["name"];
                         $watermarkTmpName = $w["tmp_name"];
                             $position = validatePosition($_POST["position"] ?? "bottom-right");
-                            $fino = finfo_open(FILEINFO_MIME_TYPE);
-                            $watermarkMimeType = finfo_file($fino, $watermarkTmpName);
-                            finfo_close($fino); 
-                                if ($watermarkMimeType === "image/png") {
+                            $watermarkValidation = validateUploadedImage($w);
+                                if ($watermarkValidation["success"] === true &&
+                                    $watermarkValidation["mime"] === "image/png") {
                                     $batch = createBatchPath('uploads_bildconverter');
 
                                     for ($i = 0; $i < $fileCount; $i++) {
 
                                         $file = getUploadedFileByIndex($f, $i);
                                         $filename = $file["name"];
-                                            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-                                            $mimeType = finfo_file($finfo, $file["tmp_name"]);
-                                            finfo_close($finfo);
-                                        if ($mimeType === "image/jpeg") {
+                                            $fileValidation = validateUploadedImage($file);
+                                        if ($fileValidation["success"] === true &&
+                                            $fileValidation["mime"] === "image/jpeg") {
                                             $newFilename = createSafeFilename($filename, "jpeg");
 
                                             $outputPath = $batch["outputDir"] . $newFilename;
@@ -70,12 +68,26 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                                         }
                                         }
                                         else {
-                                            $msg .= '<p class="error"><strong>' . htmlspecialchars($filename) . '</strong>: Dieser Dateityp ist nicht erlaubt. Bitte laden Sie JPG-Dateien hoch.</p>';
+                                            $errorMessage = $fileValidation["success"] === false
+                                                ? $fileValidation["message"]
+                                                : "Bitte laden Sie eine JPG-Datei hoch.";
+
+                                            $msg .= '<p class="error"><strong>'
+                                                . htmlspecialchars($filename)
+                                                . '</strong>: '
+                                                . htmlspecialchars($errorMessage)
+                                                . '</p>';
                                         }
                                     }
                         }
                         else {
-                            $msg = '<p class="error">Bitte laden Sie eine PNG-Datei als Wasserzeichen hoch.</p>';
+                            $errorMessage = $watermarkValidation["success"] === false
+                                ? $watermarkValidation["message"]
+                                : "Bitte laden Sie eine PNG-Datei als Wasserzeichen hoch.";
+
+                            $msg = '<p class="error">'
+                                . htmlspecialchars($errorMessage)
+                                . '</p>';
                         }
 
                     }
