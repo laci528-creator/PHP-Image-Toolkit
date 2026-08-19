@@ -131,7 +131,7 @@ if (!empty($watermarkedFiles)) {
 	<body>
     <?php require __DIR__ . "/includes/header.inc.php"; ?>
         <h1>Wasserzeichen zu Bildern hinzufügen</h1>
-            <form method="post" enctype="multipart/form-data">
+            <form method="post" enctype="multipart/form-data" class="tool-form">
                 <label>
                     Bilder auswählen (maximal <?php echo $maxFiles; ?>, nur JPG):
                     <input type="file" name="images[]" multiple accept="image/jpeg">

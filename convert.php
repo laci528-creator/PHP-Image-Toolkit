@@ -110,11 +110,11 @@ if (!empty($convertedFiles)) {
         <?php require __DIR__ . "/includes/header.inc.php"; ?>
 		<h1>Bildformat konvertieren</h1>
 		
-		<form method="post" enctype="multipart/form-data">
+		<form method="post" enctype="multipart/form-data" class="tool-form">
 			<label>
 				Bitte wählen Sie maximal 6 Bilddateien aus (JPEG, GIF, PNG, WebP, AVIF):
-				<input type="file" name="myUpload[]" multiple accept="image/jpeg,image/gif,image/png,image/webp,image/avif"><br>
-			</label><br>
+				<input type="file" name="myUpload[]" multiple accept="image/jpeg,image/gif,image/png,image/webp,image/avif">
+			</label>
             <label>
 				Bitte wählen Sie das gewünschte Ausgabeformat aus (JPEG, PNG, WebP, AVIF):
                 <select name="output_format">

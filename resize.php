@@ -113,11 +113,11 @@ if (!empty($resizedFiles)) {
         <?php require __DIR__ . "/includes/header.inc.php"; ?>
 		<h1>Bildgröße für mehrere Dateien ändern</h1>
 		
-		<form method="post" enctype="multipart/form-data">
+		<form method="post" enctype="multipart/form-data" class="tool-form">
 			<label>
 				Bitte wählen Sie maximal 20 Bilddateien aus (JPG, GIF, PNG, WebP, AVIF):
-				<input type="file" name="myUpload[]" multiple accept="image/jpeg,image/png,image/gif,image/webp,image/avif"><br>
-			</label><br>
+				<input type="file" name="myUpload[]" multiple accept="image/jpeg,image/png,image/gif,image/webp,image/avif">
+			</label>
             <label>
 				Bitte geben Sie die Länge der längeren Bildseite in Pixel an (Standard: 800 px):
                 <input type="number" name="neu_resolution" min="50" max="4000" value="800">

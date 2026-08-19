@@ -27,7 +27,7 @@ require_once __DIR__ . "/includes/common.inc.php";
 
     <a class="tool-card" href="convert.php">
         <h3>Format konvertieren</h3>
-        <p>Bilder in JPEG, PNG, WebP oder AVIF umwandeln.</p>
+        <p>Mehrere bilder in JPEG, PNG, WebP oder AVIF umwandeln.</p>
     </a>
 
     <a class="tool-card" href="watermark.php">
