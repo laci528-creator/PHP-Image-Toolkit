@@ -1,6 +1,6 @@
 <?php
-require("includes/config.inc.php");
-require("includes/common.inc.php");
+require_once __DIR__ . "/includes/config.inc.php";
+require_once __DIR__ . "/includes/common.inc.php";
 ?>
 <!doctype html>
 <html lang="de">

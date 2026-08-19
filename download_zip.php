@@ -1,5 +1,5 @@
 <?php
-require("includes/config.inc.php");
+require_once __DIR__ . "/includes/config.inc.php";
 
 function deleteDirectory(string $ordner): void {
     if (!is_dir($ordner)) {

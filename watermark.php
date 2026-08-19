@@ -1,12 +1,12 @@
 <?php
-require("includes/config.inc.php");
-require("includes/common.inc.php");
-require("includes/filename_functions.inc.php");
-require("includes/image_functions.inc.php");
-require("includes/upload_functions.inc.php");
-require("includes/validation_functions.inc.php");
-require("includes/zip_functions.inc.php");
-require("includes/batch_function.inc.php");
+require_once __DIR__ . "/includes/config.inc.php";
+require_once __DIR__ . "/includes/common.inc.php";
+require_once __DIR__ . "/includes/filename_functions.inc.php";
+require_once __DIR__ . "/includes/image_functions.inc.php";
+require_once __DIR__ . "/includes/upload_functions.inc.php";
+require_once __DIR__ . "/includes/validation_functions.inc.php";
+require_once __DIR__ . "/includes/zip_functions.inc.php";
+require_once __DIR__ . "/includes/batch_function.inc.php";
 
 
 $msg = "";
