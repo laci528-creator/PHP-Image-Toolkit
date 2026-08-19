@@ -35,9 +35,30 @@ function validateUploadedImage(array $file, int $maxFileSize = 8388608): array
         ];
     }
 
+    $imageInfo = getimagesize($file["tmp_name"]);
+
+    if ($imageInfo === false) {
+        return [
+            "success" => false,
+            "message" => "Die Datei ist kein gültiges Bild."
+        ];
+    }
+
+    $width = $imageInfo[0];
+    $height = $imageInfo[1];
+
+    if ($width > 8000 || 
+        $height > 8000 ||
+        $width * $height > 40_000_000
+    ) {
+        return [
+            "success" => false,
+            "message" => "Die Bildauflösung ist zu groß."
+        ];
+    }
+
     return [
         "success" => true,
-        "message" => "Die Datei ist gültig.",
         "mime" => $mimeType
     ];
 }
