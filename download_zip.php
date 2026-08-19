@@ -1,6 +1,5 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+require("includes/config.inc.php");
 
 function deleteDirectory(string $ordner): void {
     if (!is_dir($ordner)) {

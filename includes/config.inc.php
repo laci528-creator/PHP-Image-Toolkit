@@ -1,5 +1,5 @@
 <?php 
-define("TESTBETRIEB",true);
+define("TESTBETRIEB",false);
 
 
 
