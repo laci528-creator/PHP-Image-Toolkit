@@ -11,6 +11,7 @@ require_once __DIR__ . "/includes/common.inc.php";
     <link rel="stylesheet" href="css/common.css">
 </head>
 <body>
+    <?php require __DIR__ . "/includes/header.inc.php"; ?>
 
 <h1>PHP Image Toolkit</h1>
 <p>Wählen Sie ein Bildbearbeitungs-Tool aus:</p>

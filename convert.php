@@ -107,7 +107,7 @@ if (!empty($convertedFiles)) {
         <link rel="stylesheet" href="css/common.css">
 	</head>
 	<body>
-        <?php require("includes/header.inc.php"); ?>
+        <?php require __DIR__ . "/includes/header.inc.php"; ?>
 		<h1>Bildformat konvertieren</h1>
 		
 		<form method="post" enctype="multipart/form-data">

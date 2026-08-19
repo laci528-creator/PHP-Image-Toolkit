@@ -117,7 +117,7 @@ if (!empty($watermarkedFiles)) {
         <link rel="stylesheet" href="css/common.css">
 	</head>
 	<body>
-    <?php require("includes/header.inc.php"); ?>
+    <?php require __DIR__ . "/includes/header.inc.php"; ?>
         <h1>Wasserzeichen zu Bildern hinzufügen</h1>
             <form method="post" enctype="multipart/form-data">
                 <label>
