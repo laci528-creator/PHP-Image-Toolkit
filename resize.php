@@ -15,7 +15,7 @@ $msg2 = "";
 $msg3 = "";
 $resizedFiles = [];
 
-$maxFiles = 20;
+$maxFiles = MAX_RESIZE_FILES;
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (!empty($_FILES["myUpload"]["name"][0]) && isset($_POST["neu_resolution"]) && $_POST["neu_resolution"] !== "") {
@@ -118,14 +118,14 @@ if (!empty($resizedFiles)) {
                 <div
                     class="drop-zone"
                     data-input="resize-images"
-                    data-max-files="20"
+                    data-max-files="<?php echo $maxFiles; ?>"
                 >
                     <p class="drop-zone-text">
                         Bilder hierher ziehen oder auswählen
                     </p>
 
                     <p class="drop-zone-hint">
-                        Maximal 20 Dateien · JPG, GIF, PNG, WebP, AVIF
+                        Maximal <?php echo $maxFiles; ?> Dateien · JPG, GIF, PNG, WebP, AVIF
                     </p>
 
                     <button type="button" class="drop-zone-button">

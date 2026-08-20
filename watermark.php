@@ -14,7 +14,7 @@ $msg2 = "";
 $msg3 = "";
 $watermarkedFiles = [];
 
-$maxFiles = 10; // Maximale Anzahl an Dateien, die hochgeladen werden können
+$maxFiles = MAX_WATERMARK_FILES; // Maximale Anzahl an Dateien, die hochgeladen werden können
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (!empty($_FILES["images"]["name"][0]) && !empty($_FILES["watermark"]["name"]) ) {

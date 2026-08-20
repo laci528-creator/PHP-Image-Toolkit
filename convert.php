@@ -12,7 +12,7 @@ $msg = "";
 $msg2 = "";
 $msg3 = "";
 
-$maxFiles = 6;
+$maxFiles = MAX_CONVERT_FILES;
 $convertedFiles = [];
 
 if($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -115,14 +115,14 @@ if (!empty($convertedFiles)) {
                 <div
                     class="drop-zone"
                     data-input="convert-images"
-                    data-max-files="6"
+                    data-max-files="<?php echo $maxFiles; ?>"
                 >
                     <p class="drop-zone-text">
                         Bilder hierher ziehen oder auswählen
                     </p>
 
                     <p class="drop-zone-hint">
-                        Maximal 6 Dateien · JPEG, GIF, PNG, WebP, AVIF
+                        Maximal <?php echo $maxFiles; ?> Dateien · JPEG, GIF, PNG, WebP, AVIF
                     </p>
 
                     <button type="button" class="drop-zone-button">
