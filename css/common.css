@@ -1,3 +1,10 @@
+body {
+    background-color: #1f2d3a;
+    background-image: url("../img/dark-matter.png");
+}
+
+
+
 .ta {
 	background-color:#ffc;
 	border:1px solid orange;
@@ -110,7 +117,7 @@ td input {
     padding: 1.5rem;
     border: 1px solid #ccc;
     border-radius: 10px;
-    background-color: rgba(255, 255, 255, 0.02);
+    background-color: rgba(27, 40, 53, 0.96);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
     max-width: 850px;
     display: flex;
@@ -118,3 +125,7 @@ td input {
     gap: 1.25rem;
 }
 
+.tool-form .action-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}

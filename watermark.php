@@ -155,7 +155,7 @@ if (!empty($watermarkedFiles)) {
                     Transparenz:
                     <input type="number" name="opacity" min="1" max="100" value="50">
                 </label>
-                <input type="submit" value="Wasserzeichen hinzufügen">
+                <input type="submit" value="Wasserzeichen hinzufügen" class="action-button">
             </form>
 		    <?php echo($msg3); ?>
             <?php echo($msg); ?>
