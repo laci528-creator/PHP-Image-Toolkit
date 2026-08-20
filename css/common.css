@@ -88,7 +88,7 @@ td input {
 }
 
 .tool-card {
-    background-color: rgba(255, 255, 255, 0.02);
+    background-color: rgba(27, 40, 53, 0.96);
     display: block;
     padding: 1rem;
     border: 1px solid #ccc;
@@ -101,7 +101,8 @@ td input {
 
 .tool-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.55);
+    text-decoration: none;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.45);
 }
 .preview-card {
     margin-bottom: 30px;
@@ -116,7 +117,7 @@ td input {
     height: auto;
 }
 .about-section {
-    background-color: rgba(255, 255, 255, 0.02);
+    background-color: rgba(27, 40, 53, 0.96);
     margin-top: 4rem;
     line-height: 1.6;
     border: 1px solid #ccc;
