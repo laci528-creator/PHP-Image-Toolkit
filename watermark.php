@@ -6,7 +6,7 @@ require_once __DIR__ . "/includes/image_functions.inc.php";
 require_once __DIR__ . "/includes/upload_functions.inc.php";
 require_once __DIR__ . "/includes/validation_functions.inc.php";
 require_once __DIR__ . "/includes/zip_functions.inc.php";
-require_once __DIR__ . "/includes/batch_function.inc.php";
+require_once __DIR__ . "/includes/batch_functions.inc.php";
 
 
 $msg = "";
@@ -133,10 +133,29 @@ if (!empty($watermarkedFiles)) {
         <h1>Wasserzeichen zu Bildern hinzufügen</h1>
             <form method="post" enctype="multipart/form-data" class="tool-form">
                 <label>
-                    Bilder auswählen (maximal <?php echo $maxFiles; ?>, nur JPG):
-                    <input type="file" name="images[]" multiple accept="image/jpeg">
-                </label>
+                <div
+                    class="drop-zone"
+                    data-input="insert-watermark"
+                    data-max-files="<?= $maxFiles ?>"
+                >
+                    <p class="drop-zone-text">
+                        Bilder hierher ziehen oder auswählen
+                    </p>
 
+                    <p class="drop-zone-hint">
+                        Maximal <?php echo $maxFiles; ?> Dateien · nur JPEG
+                    </p>
+
+                    <button type="button" class="drop-zone-button">
+                        Dateien auswählen
+                    </button>
+
+                    <p class="drop-zone-files">
+                        Keine Dateien ausgewählt.
+                    </p>
+                </div>
+                    <input class="drop-zone-input" id="insert-watermark" type="file" name="images[]" multiple accept="image/jpeg">
+                </label>
                 <label>
                     Wasserzeichen / Logo auswählen:
                     <input type="file" name="watermark" accept="image/png">
@@ -163,5 +182,6 @@ if (!empty($watermarkedFiles)) {
                 <h2>Vorschau der Bilder mit Wasserzeichen</h2>
             <?php echo($msg2); ?>
             <?php endif; ?>
+            <script src="js/dropzone.js"></script>
 	</body>
 </html>

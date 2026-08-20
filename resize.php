@@ -7,7 +7,7 @@ require_once __DIR__ . "/includes/image_functions.inc.php";
 require_once __DIR__ . "/includes/upload_functions.inc.php";
 require_once __DIR__ . "/includes/validation_functions.inc.php";
 require_once __DIR__ . "/includes/zip_functions.inc.php";
-require_once __DIR__ . "/includes/batch_function.inc.php";
+require_once __DIR__ . "/includes/batch_functions.inc.php";
 
 
 $msg = "";
@@ -114,15 +114,43 @@ if (!empty($resizedFiles)) {
 		<h1>Bildgröße für mehrere Dateien ändern</h1>
 		
 		<form method="post" enctype="multipart/form-data" class="tool-form">
-			<label>
-				Bitte wählen Sie maximal 20 Bilddateien aus (JPG, GIF, PNG, WebP, AVIF):
-				<input type="file" name="myUpload[]" multiple accept="image/jpeg,image/png,image/gif,image/webp,image/avif">
-			</label>
+            <label>
+                <div
+                    class="drop-zone"
+                    data-input="resize-images"
+                    data-max-files="20"
+                >
+                    <p class="drop-zone-text">
+                        Bilder hierher ziehen oder auswählen
+                    </p>
+
+                    <p class="drop-zone-hint">
+                        Maximal 20 Dateien · JPG, GIF, PNG, WebP, AVIF
+                    </p>
+
+                    <button type="button" class="drop-zone-button">
+                        Dateien auswählen
+                    </button>
+
+                    <p class="drop-zone-files">
+                        Keine Dateien ausgewählt.
+                    </p>
+                </div>
+
+                <input
+                    class="drop-zone-input"
+                    id="resize-images"
+                    type="file"
+                    name="myUpload[]"
+                    multiple
+                    accept="image/jpeg,image/png,image/gif,image/webp,image/avif"
+                    hidden
+                >
             <label>
 				Bitte geben Sie die Länge der längeren Bildseite in Pixel an (Standard: 800 px):
                 <input type="number" name="neu_resolution" min="50" max="4000" value="800">
             </label>
-			<input type="submit" name="HC" value="Hochladen und Skalieren">
+			<input type="submit" name="HC" value="Hochladen und Skalieren" class="action-button">
 		</form>
         <br>
 		<?php echo($msg); ?>
@@ -131,5 +159,6 @@ if (!empty($resizedFiles)) {
             <h2>Vorschau der skalierten Bilder</h2>
 		<?php echo $msg2; ?>
         <?php endif; ?>
+<script src="js/dropzone.js"></script>
 	</body>
 </html>

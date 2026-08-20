@@ -6,7 +6,7 @@ require_once __DIR__ . "/includes/image_functions.inc.php";
 require_once __DIR__ . "/includes/upload_functions.inc.php";
 require_once __DIR__ . "/includes/validation_functions.inc.php";
 require_once __DIR__ . "/includes/zip_functions.inc.php";
-require_once __DIR__ . "/includes/batch_function.inc.php";
+require_once __DIR__ . "/includes/batch_functions.inc.php";
 
 $msg = "";
 $msg2 = "";
@@ -112,8 +112,28 @@ if (!empty($convertedFiles)) {
 		
 		<form method="post" enctype="multipart/form-data" class="tool-form">
 			<label>
-				Bitte wählen Sie maximal 6 Bilddateien aus (JPEG, GIF, PNG, WebP, AVIF):
-				<input type="file" name="myUpload[]" multiple accept="image/jpeg,image/gif,image/png,image/webp,image/avif">
+                <div
+                    class="drop-zone"
+                    data-input="convert-images"
+                    data-max-files="6"
+                >
+                    <p class="drop-zone-text">
+                        Bilder hierher ziehen oder auswählen
+                    </p>
+
+                    <p class="drop-zone-hint">
+                        Maximal 6 Dateien · JPEG, GIF, PNG, WebP, AVIF
+                    </p>
+
+                    <button type="button" class="drop-zone-button">
+                        Dateien auswählen
+                    </button>
+
+                    <p class="drop-zone-files">
+                        Keine Dateien ausgewählt.
+                    </p>
+                </div>
+				<input class="drop-zone-input" id="convert-images" type="file" name="myUpload[]" multiple accept="image/jpeg,image/gif,image/png,image/webp,image/avif">
 			</label>
             <label>
 				Bitte wählen Sie das gewünschte Ausgabeformat aus (JPEG, PNG, WebP, AVIF):
@@ -128,7 +148,7 @@ if (!empty($convertedFiles)) {
 				Bitte geben Sie die gewünschte Bildqualität ein (1-99, Standard: 85):
                 <input type="number" name="quality" min="1" max="99" value="85">
             </label>
-			<input type="submit" value="Hochladen und konvertieren">
+			<input type="submit" value="Hochladen und konvertieren" class="action-button">
 		</form>
         <?php echo($msg3); ?>
         <?php echo($msg); ?>
@@ -136,5 +156,6 @@ if (!empty($convertedFiles)) {
             <h2>Vorschau der konvertierten Bilder</h2>
 		<?php echo $msg2; ?>
         <?php endif; ?>
+        <script src="js/dropzone.js"></script>
     </body>
 </html>

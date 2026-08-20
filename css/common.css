@@ -137,8 +137,38 @@ td input {
     flex-direction: column;
     gap: 1.25rem;
 }
+.tool-form .action-button {
+    display: block;
+    width: 100%;
+    margin-top: 1.5rem;
+}
 
 .tool-form .action-button:hover {
     transform: translateY(-3px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.drop-zone {
+    padding: 2rem;
+    border: 2px dashed rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.drop-zone.drag-over {
+    border-color: #3da9fc;
+    background-color: rgba(61, 169, 252, 0.08);
+}
+
+.drop-zone-files {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+}
+.drop-zone-input {
+    display: none !important;
 }
