@@ -1,0 +1,6 @@
+# Generated image batches
+uploads_bildconverter/
+
+# OS files
+.DS_Store
+Thumbs.db
