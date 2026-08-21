@@ -153,6 +153,7 @@ if (!empty($resizedFiles)) {
                     accept="image/jpeg,image/png,image/gif,image/webp,image/avif"
                     hidden
                 >
+            </label>
             <label>
 				Bitte geben Sie die Länge der längeren Bildseite in Pixel an (Standard: 800 px):
                 <input type="number" name="neu_resolution" min="50" max="4000" value="800">
