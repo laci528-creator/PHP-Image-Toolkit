@@ -139,14 +139,6 @@ function Convert_Bild(string $pfad, int $size_neu, string $pfad_neu): bool {
 }
 
 
-function buildPreview(string $mappe, string $originalName, int $groesse): string {
-    $info = pathinfo($originalName);
-    $neuerDateiname = $info["filename"] . "_" . $groesse . "px." . $info["extension"];
-
-    return '<img style="max-width:300px;height:auto;" src="' . $mappe . $groesse . '/' . rawurlencode($neuerDateiname) . '"><br><p>' . htmlspecialchars($neuerDateiname) . '</p>';
-}
-
-
 function addWatermark(
     string $imagePath,
     string $watermarkPath,
