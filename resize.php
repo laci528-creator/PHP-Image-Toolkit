@@ -14,6 +14,13 @@ $msg = "";
 $msg2 = "";
 $msg3 = "";
 $resizedFiles = [];
+$extensionMap = [
+    "image/jpeg" => "jpg",
+    "image/png" => "png",
+    "image/gif" => "gif",
+    "image/webp" => "webp",
+    "image/avif" => "avif"
+];
 
 $maxFiles = MAX_RESIZE_FILES;
 
@@ -36,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             $validation = validateUploadedImage($file);
                                 if($validation['success'] === true)  { 
 
-                                    $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+                                    $extension = $extensionMap[$validation["mime"]];
                                     $newFilename = createSafeFilename($filename, $extension);
                                     $newFilenameWithResolution = pathinfo($newFilename, PATHINFO_FILENAME) . "_" . $neuResolution . "." . $extension;
 
