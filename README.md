@@ -40,7 +40,7 @@ The project also gave me the opportunity to deepen my knowledge of PHP, file han
 
 ## Technologies Used
 
-* PHP
+* PHP 8.1+
 * JavaScript
 * HTML5
 * CSS3
@@ -111,9 +111,10 @@ A live demo is available for testing the application.
 
 2. Move the project into your XAMPP htdocs directory.
 3. Make sure the following PHP extensions are enabled:
-    * GD
-    * ZipArchive
-    * fileinfo
+   * PHP 8.1+
+   * GD extension with JPEG, PNG, WebP and AVIF support
+   * ZipArchive
+   * fileinfo
 4. Start Apache.
 5. Open the project in your browser.
 
@@ -186,7 +187,7 @@ Gleichzeitig bot mir das Projekt die Möglichkeit, meine Kenntnisse in PHP, Date
 
 ## Verwendete Technologien
 
-* PHP
+* PHP 8.1+
 * JavaScript
 * HTML5
 * CSS3
@@ -259,7 +260,8 @@ Eine Live-Demo steht zum Testen der Anwendung zur Verfügung.
 
 3. Sicherstellen, dass die folgenden PHP-Erweiterungen aktiviert sind:
 
-   * GD
+   * PHP 8.1+
+   * GD extension mit JPEG, PNG, WebP und AVIF support
    * ZipArchive
    * Fileinfo
 
